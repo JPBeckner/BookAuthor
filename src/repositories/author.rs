@@ -1,6 +1,6 @@
 use crate::domain::entities::Author;
 use crate::repositories::mongo::MongoDB;
-use mongodb::{Collection, bson::doc, options::FindOptions, error::Error};
+use mongodb::{Collection, bson::doc, options::FindOptions, error::Error, results::InsertOneResult};
 
 
 #[derive(Debug, Clone)]
@@ -13,8 +13,12 @@ impl AuthorRepository {
         AuthorRepository{ connection: MongoDB{}.author().await}
     } 
 
-    pub async fn insert(&self, author: Author) {
-        self.connection.insert_one(author, None);
+    pub async fn insert(&self, author: Author) -> Result<i32, bool> {
+        let result = self.connection.insert_one(&author, None).await;
+        match result {
+            Ok(_) => Ok(author.id_author),
+            Err(_) => Err(false),
+        }
     }
 
     pub async fn search(&self, id: i32) -> Result<Author, Error> {

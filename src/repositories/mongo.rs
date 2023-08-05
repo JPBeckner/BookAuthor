@@ -19,7 +19,7 @@ impl MongoDB {
 
     pub async fn book(&self) -> Collection<Book> {
         let db = self.get_connection().await;
-        let collection: Collection<Book> = db.collection::<Book>("books");
+        let collection: Collection<Book> = db.collection::<Book>("book");
         return collection;
     }
 

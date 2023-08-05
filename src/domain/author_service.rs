@@ -23,6 +23,15 @@ impl AuthorService {
             Err(_) => Err(String::from("Not Found"))
         }
     }
+
+    pub async fn create(&self, author: Author) -> Result<String, String> {
+        let result = self.repo.insert(author).await;
+        match result {
+            Ok(_) => Ok(String::from("Sucess")),
+            Err(_) => Err(String::from("Fail")),
+            // _ => todo!("Fail"),
+        }
+    }
 }
 
 

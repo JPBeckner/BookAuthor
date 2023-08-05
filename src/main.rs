@@ -29,7 +29,7 @@ async fn main() {
     let app = Router::new()
     .route("/", get(|| async { "system up!" }))
     .route("/healthcheck", get(|| async { "system up!" }))
-    .route("/author", get(adapter::author_controller::get_author))
+    .route("/author", get(adapter::author_controller::get_author).post(adapter::author_controller::post_author))
     .with_state(repo_state);
 
     println!("\nServer up on http://0.0.0.0:3000");

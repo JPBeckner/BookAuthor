@@ -1,7 +1,9 @@
-use crate::domain::author_service::AuthorService;
+use crate::{domain::author_service::AuthorService, repositories::author};
 use crate::domain::entities::Author;
 
 use axum::{response::Json, extract::State};
+use axum::extract::{Path, Query, Json as eJson};
+
 use std::sync::Arc;
 use serde_json::{Value, json};
 
@@ -28,19 +30,26 @@ pub async fn get_author(State(state): State<Arc<AuthorService>>,) -> Json<Value>
             Json(json!(author))
             // serde_json::to_string(&author).unwrap();
         },
-        Err(e) => Json(json!({"message": "Author Not Found"}))
+        Err(_) => Json(json!({"message": "Author Not Found"}))
     }
     // println!("{}", author);
     
     // return author.id_author;
 }
 
+pub async fn post_author(State(state): State<Arc<AuthorService>>, eJson(payload): eJson<serde_json::Value>) -> Json<Value> {
+    let author = Author { id_author: payload.get("id_author").unwrap().as_i64().unwrap() as i32, name: payload.get("name").unwrap().as_str().unwrap().to_string(), last_name: payload.get("last_name").unwrap().as_str().unwrap().to_string() };
+    let result = state.create(author).await;
+    match result {
+        Ok(message) => Json(json!({"message": message})),
+        Err(message) => Json(json!({"message": message}))
+    }
+}
+
 
 impl AuthorController{
     
-    pub async fn post_author() {
     
-    }
     
     pub async fn put_author() {
     
