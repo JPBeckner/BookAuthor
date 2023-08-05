@@ -12,3 +12,4 @@ tokio = { version = "1.27.0", features = ["full"] }
 tower = "0.4.13"
 serde = { version = "1.0.174", features = ["derive"] }
 mongodb = "2.6.0"
+serde_json = "1.0.103"
