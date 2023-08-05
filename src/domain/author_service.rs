@@ -1,7 +1,6 @@
-use std::process::id;
 
 use crate::domain::entities::Author;
-use crate::repositories::author::{AuthorRepository, self};
+use crate::repositories::author::AuthorRepository;
 
 #[derive(Debug, Clone)]
 pub struct AuthorService{
@@ -9,16 +8,9 @@ pub struct AuthorService{
 }
 
 impl AuthorService {
-    // pub fn new(id_author: String, Name: String, last_name: String) -> Author {
-    //     Author {
-    //         id_author, 
-    //         Name, 
-    //         last_name
-    //     }
-    // }
 
-    pub async fn get(&self, id_author: i32) -> Result<Author, String> {
-        match self.repo.search(id_author).await {
+    pub async fn get(&self, find_author: Author) -> Result<Author, String> {
+        match self.repo.search(find_author).await {
             Ok(author) => Ok(author),
             Err(_) => Err(String::from("Not Found"))
         }
@@ -29,7 +21,6 @@ impl AuthorService {
         match result {
             Ok(_) => Ok(String::from("Sucess")),
             Err(_) => Err(String::from("Fail")),
-            // _ => todo!("Fail"),
         }
     }
 }

@@ -1,6 +1,6 @@
 use crate::domain::entities::Author;
 use crate::repositories::mongo::MongoDB;
-use mongodb::{Collection, bson::doc, options::FindOptions, error::Error, results::InsertOneResult};
+use mongodb::{Collection, bson::{doc, Document}, error::Error};
 
 
 #[derive(Debug, Clone)]
@@ -21,10 +21,21 @@ impl AuthorRepository {
         }
     }
 
-    pub async fn search(&self, id: i32) -> Result<Author, Error> {
-        let filter = doc! { "id_author": id };
-        // let find_options = FindOptions::builder().sort(doc! { "title": 1 }).build();
+    pub async fn search(&self, find_author: Author) -> Result<Author, Error> {
+
+        let mut filter = Document::from(doc! {});
+        if find_author.id_author > 0 {
+            filter.insert("id_author", find_author.id_author);
+        }
+        if !find_author.name.is_empty() {
+            filter.insert("name", find_author.name);
+        }
+        if !find_author.last_name.is_empty() {
+            filter.insert("last_name", find_author.last_name);
+        }
+
         let cursor = self.connection.find_one(filter, None).await;
+        
         match cursor {
             Ok(cursor) => Ok(cursor.unwrap()),
             Err(err) => Err(err),
